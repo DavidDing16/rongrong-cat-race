@@ -1,7 +1,8 @@
 (async function(){
   'use strict';
-  const BUILD='20261004-mobile-race-v9';
-  const canvas=document.getElementById('game');
+  const BUILD='20261004-mobile-race-v9-pages';
+  const canvas=document.getElementById('game'),loading=document.getElementById('loading');
+  function loadingMessage(message){const label=loading?.querySelector('p');if(label)label.textContent=message;}
   async function load(src){
     for(let attempt=0;attempt<3;attempt++){
       try{return await new Promise((resolve,reject)=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=reject;image.src=src+'?v='+BUILD+'&attempt='+attempt;});}
@@ -16,9 +17,10 @@
       async function script(src){return new Promise((resolve,reject)=>{const el=document.createElement('script');el.src=src+'?v='+BUILD;el.onload=resolve;el.onerror=()=>reject(new Error('脚本加载失败：'+src));document.head.append(el);});}
       await script('vendor/three.js');await script('shared/glb-loader.js');await script('shared/view-mapping.js');await script('shared/camera-framing.js');await script('shared/webgl-renderer.js');
       const models={cats:{},props:{}};
-      for(const section of ['cats','props'])for(const [name,file]of Object.entries(manifest[section]||{})){const directory='assets/models/';const response=await fetch(directory+file+'?v='+BUILD,{cache:'no-store'});if(!response.ok)throw new Error('云端3D资源缺失：'+file);models[section][name]=CatRaceGLB.parse(await response.arrayBuffer(),THREE);}
+      const entries=['cats','props'].flatMap(section=>Object.entries(manifest[section]||{}).map(([name,file])=>({section,name,file})));let loaded=0;loadingMessage('小猫和罐罐正在到位… 0/'+entries.length);await Promise.all(entries.map(async({section,name,file})=>{const response=await fetch('assets/models/'+file+'?v='+BUILD,{cache:'no-store'});if(!response.ok)throw new Error('3D资源缺失：'+file);models[section][name]=CatRaceGLB.parse(await response.arrayBuffer(),THREE);loadingMessage('小猫和罐罐正在到位… '+(++loaded)+'/'+entries.length);}));
       renderOptions={Renderer:CatRaceWebGL.Renderer,models};
     }
+    loadingMessage('正在准备音效和赛道音乐…');
     const audioManifest=await (await fetch('assets/audio/manifest.json?v='+BUILD,{cache:'no-store'})).json();
     let initial={};try{initial=JSON.parse(localStorage.getItem('cat-race-audio-settings')||'null')||{};if(!localStorage.getItem('cat-race-audio-settings')&&localStorage.getItem('cat-race-muted')==='true')initial={musicEnabled:false,sfxEnabled:false};}catch{}
     const audio=await CatRaceAudio.browser(audioManifest,initial,settings=>{try{localStorage.setItem('cat-race-audio-settings',JSON.stringify(settings));}catch{}});
@@ -41,6 +43,7 @@
     const runtime=CatRaceRuntime.createRuntime(platform,images,renderOptions);
     // Read-only diagnostics: usable for browser QA without mutating race state.
     window.catRace={buildVersion:BUILD,snapshot:()=>runtime.race.snapshot(),track:()=>runtime.race.track.map(o=>({...o,collected:runtime.race.isCollected(o)})),world:()=>({visibleObjectIds:[...(runtime.renderer.objects?.keys()||[])]}),metrics:()=>runtime.metrics(),audio:()=>audio.status(),keyboard:()=>keyboard?.status(),inputs:()=>runtime.inputStatus(),screen:()=>runtime.renderer.screenState?runtime.renderer.screenState(runtime.race):null,poses:()=>runtime.renderer.actors?runtime.renderer.actors.map(a=>({name:a.root.name,race:a.root.userData.racePose,nodes:['Body','Head','LegFL','Tail'].map(name=>{const n=a.root.getObjectByName(name);return {name,position:n?.position.toArray(),quaternion:n?.quaternion.toArray(),scale:n?.scale.toArray()};})})):[]};
+    if(loading)loading.hidden=true;
     let lastMode='';setInterval(()=>{const s=runtime.race.snapshot();if(s.mode!==lastMode){lastMode=s.mode;document.getElementById('accessible').textContent=s.mode==='results'?'比赛结束，第'+s.rank+'名':s.mode==='paused'?'比赛暂停':s.mode==='racing'?'比赛开始':s.mode==='select'?'请选择小猫':'准备开始';}},300);
-  }catch(error){const el=document.getElementById('error');el.style.display='block';el.textContent=error.message;console.error(error);}
+  }catch(error){if(loading)loading.hidden=true;const el=document.getElementById('error');el.style.display='block';el.textContent=error.message;console.error(error);}
 })();
