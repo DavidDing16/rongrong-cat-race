@@ -1,0 +1,36 @@
+{
+  "files": {
+    "music": "assets/audio/garden-chase-132.wav",
+    "meow": "assets/meow.wav",
+    "jump": "assets/audio/jump.wav",
+    "land": "assets/audio/land.wav",
+    "food": "assets/audio/food.wav",
+    "can": "assets/audio/can.wav",
+    "boost": "assets/audio/boost.wav",
+    "hit": "assets/audio/hit.wav",
+    "victory": "assets/audio/victory.wav",
+    "finish": "assets/audio/finish.wav"
+  },
+  "durations": {
+    "music": 14.545442176870749,
+    "meow": 0.36,
+    "jump": 0.18,
+    "land": 0.14,
+    "food": 0.15002267573696146,
+    "can": 0.28,
+    "boost": 0.32,
+    "hit": 0.23002267573696145,
+    "victory": 0.88,
+    "finish": 0.34997732426303857
+  },
+  "sampleRate": 22050,
+  "channels": 1,
+  "encoding": "PCM signed 16-bit WAV",
+  "origin": "Original deterministic composition/DSP; no external samples, no referenced song",
+  "license": "CC0-1.0",
+  "licenseURL": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "attributionRequired": false,
+  "bpm": 132,
+  "beatsPerLoop": 32,
+  "arrangement": "New staccato mallet/pluck, syncopated bass and quiet shaker accents; no pitch-shift or tempo-stretch"
+}

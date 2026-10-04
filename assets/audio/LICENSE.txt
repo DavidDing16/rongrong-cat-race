@@ -1,0 +1,4 @@
+The original generated audio files listed in provenance.json are dedicated under CC0-1.0.
+https://creativecommons.org/publicdomain/zero/1.0/
+No third-party recordings, samples, or existing song melody were used. No attribution is required.
+This dedication applies to the listed audio, not the user's cat models, photographs, or other project assets.

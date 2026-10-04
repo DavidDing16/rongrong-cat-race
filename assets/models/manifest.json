@@ -1,0 +1,20 @@
+{
+  "ready": true,
+  "revision": "three-cats-racing-assets-v1-plus-refinement-delta",
+  "coordinateSystem": "Y-up/+Z-forward/meters",
+  "cats": {
+    "rongrong": "rongrong.glb",
+    "orange": "ginger.glb",
+    "american": "american.glb"
+  },
+  "props": {
+    "food": "freeze_dried.glb",
+    "can": "snack_can.glb",
+    "hurdle": "log_obstacle.glb",
+    "finish": "finish_arch.glb",
+    "hedge": "hedge_obstacle.glb",
+    "fence": "fence_segment.glb",
+    "flowers": "flower_patch.glb",
+    "tree": "garden_tree.glb"
+  }
+}
